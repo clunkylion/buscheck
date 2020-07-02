@@ -10,11 +10,11 @@ class People extends Model
     protected $fillable = [
         "rut",
         "name",
-        "lastname",
+        "lastName",
         "phone",
         "email",
         "sex",
-        "datebirth"
+        "dateBirth"
     ];
     
 }
