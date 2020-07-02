@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Driver;
+use App\People;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Symfony\Component\HttpFoundation\Response;
 
 class DriverController extends Controller
 {
@@ -15,17 +18,14 @@ class DriverController extends Controller
     public function index()
     {
         //
+        $driver = DB::table('drivers')->join('people','people.id', '=', 'drivers.peopleId')->get();
+        return response()->json([
+            "data" => $driver,
+            "status" => Response::HTTP_OK
+        ], Response::HTTP_OK);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
+    
 
     /**
      * Store a newly created resource in storage.
@@ -36,6 +36,29 @@ class DriverController extends Controller
     public function store(Request $request)
     {
         //
+        $people = People::create([
+            "rut" => $request->input('rut'),
+            "name" => $request->input('name'),
+            "lastName" => $request->input('lastName'),
+            "phone" => $request->input('phone'),
+            "email" => $request->input('email'),
+            "sex" => $request->input('sex'),
+            "dateBirth" => $request->input('dateBirth'),
+        ]);
+        $driver = Driver::create([
+            "driverStatus" => $request->input('driverStatus'),
+            "enterpriseId" => $request->input('enterpriseId'),
+            "peopleId" => $people->id
+        ]);
+
+        return response()->json([
+            "message" => "Chofer creado correctamente",
+            "data" => [
+                "people" => $people,
+                "driver" => $driver
+            ],
+            "status" => Response::HTTP_OK
+        ],Response::HTTP_OK);
     }
 
     /**
@@ -44,21 +67,18 @@ class DriverController extends Controller
      * @param  \App\Driver  $driver
      * @return \Illuminate\Http\Response
      */
-    public function show(Driver $driver)
+    public function show($id)
     {
         //
+        $driver =DB::table('drivers')
+        ->join('people', 'people.id', '=' , 'drivers.peopleId')
+        ->where('drivers.id', '=', $id)->get();
+        return response()->json([
+            "Data" => $driver,
+            "status" => Response::HTTP_OK
+        ],Response::HTTP_OK);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Driver  $driver
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Driver $driver)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
@@ -67,9 +87,29 @@ class DriverController extends Controller
      * @param  \App\Driver  $driver
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Driver $driver)
+    public function update($id,Request $request)
     {
         //
+        $driver = Driver::find($id);
+        $peopleId = $driver->peopleId;
+        $people = People::find($peopleId);
+        $people->update([
+            "rut" => $request->input('rut'),
+            "name" => $request->input('name'),
+            "lastName" => $request->input('lastName'),
+            "phone" => $request->input('phone'),
+            "email" => $request->input('email'),
+            "sex" => $request->input('sex'),
+            "dateBirth" => $request->input('dateBirth'),
+        ]);
+        $driver->update([
+            "driverStatus" => $request->input('driverStatus'),
+        ]);
+        return response()->json([
+            "message" => "Chofer actualizado correctamente",
+            "data" => $driver,
+            "status" => Response::HTTP_OK
+        ],Response::HTTP_OK);
     }
 
     /**
@@ -78,8 +118,17 @@ class DriverController extends Controller
      * @param  \App\Driver  $driver
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Driver $driver)
+    public function destroy($id)
     {
         //
+        $driver = Driver::find($id);
+        $peopleId = $driver->peopleId;
+        $people = People::find($peopleId);
+        $people->delete();
+        $driver->delete();
+        return response()->json([
+            "message" => "Chofer eliminado Correctamente",
+            "status" => Response::HTTP_OK
+        ],Response::HTTP_OK);
     }
 }
