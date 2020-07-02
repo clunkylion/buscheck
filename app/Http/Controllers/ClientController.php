@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Client;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class ClientController extends Controller
 {
@@ -15,16 +16,11 @@ class ClientController extends Controller
     public function index()
     {
         //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        $client = Client::all();
+        return response()->json([
+            "data" => $client,
+            "status" => Response::HTTP_OK
+        ], Response::HTTP_OK);
     }
 
     /**
@@ -36,6 +32,12 @@ class ClientController extends Controller
     public function store(Request $request)
     {
         //
+        $client = Client::create($request->all());
+        return response()->json([
+            "message" => "Cliente creado correctamente",
+            "data" => $client,
+            "status" => Response::HTTP_OK
+        ], Response::HTTP_OK);
     }
 
     /**
@@ -47,18 +49,12 @@ class ClientController extends Controller
     public function show(Client $client)
     {
         //
+        return response()->json([
+            "data" => $client,
+            "status" => Response::HTTP_OK
+        ], Response::HTTP_OK);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Client  $client
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Client $client)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
@@ -70,6 +66,12 @@ class ClientController extends Controller
     public function update(Request $request, Client $client)
     {
         //
+        $client->update($request->all());
+        return response()->json([
+            "message" => "Tipo de cliente actualizado",
+            "data" => $client,
+            "status" => Response::HTTP_OK
+        ], Response::HTTP_OK);
     }
 
     /**
@@ -81,5 +83,11 @@ class ClientController extends Controller
     public function destroy(Client $client)
     {
         //
+        $client->delete();
+        return response()->json([
+            "message" => "Tipo de cliente eliminado",
+            "data" => $client,
+            "status" => Response::HTTP_OK
+        ], Response::HTTP_OK);
     }
 }
