@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enterprise;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class EnterpriseController extends Controller
 {
@@ -15,16 +16,11 @@ class EnterpriseController extends Controller
     public function index()
     {
         //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        $enterprise = Enterprise::all();
+        return response()->json([ 
+            "data" => $enterprise,
+            "status" => Response::HTTP_OK,
+        ], Response::HTTP_OK);
     }
 
     /**
@@ -36,6 +32,12 @@ class EnterpriseController extends Controller
     public function store(Request $request)
     {
         //
+        $enterprise = Enterprise::create($request->all());
+        return response()->json([
+            "message" => "Empresa creada correctamente",
+            "data" => $enterprise,
+            "status" => Response::HTTP_OK
+        ], Response::HTTP_OK);
     }
 
     /**
@@ -47,17 +49,7 @@ class EnterpriseController extends Controller
     public function show(Enterprise $enterprise)
     {
         //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Enterprise  $enterprise
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Enterprise $enterprise)
-    {
-        //
+        return $enterprise;
     }
 
     /**
@@ -70,6 +62,12 @@ class EnterpriseController extends Controller
     public function update(Request $request, Enterprise $enterprise)
     {
         //
+        $enterprise->update($request->all());
+        return response()->json([
+            "message" => "Datos de empresa actualizados",
+            "data" => $enterprise,
+            "status" => Response::HTTP_OK
+        ], Response::HTTP_OK);
     }
 
     /**
@@ -81,5 +79,11 @@ class EnterpriseController extends Controller
     public function destroy(Enterprise $enterprise)
     {
         //
+        $enterprise->delete();
+        return response()->json([
+            "message" => "Datos de empresa eliminados",
+            "data" => $enterprise,
+            "status" => Response::HTTP_OK
+        ], Response::HTTP_OK);
     }
 }
