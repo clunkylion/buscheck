@@ -11,4 +11,7 @@ class Destination extends Model
         "busStation",
         "city",
     ];
+    public function hours(){
+        return $this->hasMany('App\Hour');
+    }
 }

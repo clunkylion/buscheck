@@ -23,3 +23,6 @@ Route::apiResource('/enterprise', 'EnterpriseController');
 Route::apiResource('/client', 'ClientController');
 Route::apiResource('/user', 'UserController');
 Route::apiResource('/driver', 'DriverController');
+Route::apiResource('/origin', 'OriginController');
+Route::apiResource('/destination', 'DestinationController');
+Route::apiResource('/hour', 'HourController');

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Origin;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class OriginController extends Controller
 {
@@ -15,17 +16,13 @@ class OriginController extends Controller
     public function index()
     {
         //
+        $origin = Origin::all();
+        return response()->json([ 
+            "data" => $origin,
+            "status" => Response::HTTP_OK,
+        ], Response::HTTP_OK);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -36,6 +33,12 @@ class OriginController extends Controller
     public function store(Request $request)
     {
         //
+        $origin = Origin::create($request->all());
+        return response()->json([
+            "message" => "Origen creada correctamente",
+            "data" => $origin,
+            "status" => Response::HTTP_OK
+        ], Response::HTTP_OK);
     }
 
     /**
@@ -47,18 +50,9 @@ class OriginController extends Controller
     public function show(Origin $origin)
     {
         //
+        return $origin;
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Origin  $origin
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Origin $origin)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
@@ -67,9 +61,16 @@ class OriginController extends Controller
      * @param  \App\Origin  $origin
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Origin $origin)
+    public function update($id, Request $request)
     {
         //
+        $origin=Origin::find($id);
+        $origin->update($request->all());
+        return response()->json([
+            "message" => "Datos del origen actualizados",
+            "data" => $origin,
+            "status" => Response::HTTP_OK
+        ], Response::HTTP_OK);
     }
 
     /**
@@ -81,5 +82,11 @@ class OriginController extends Controller
     public function destroy(Origin $origin)
     {
         //
+        $origin->delete();
+        return response()->json([
+            "message" => "Datos del origen eliminados",
+            "data" => $origin,
+            "status" => Response::HTTP_OK
+        ], Response::HTTP_OK);
     }
 }
