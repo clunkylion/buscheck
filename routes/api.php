@@ -26,3 +26,4 @@ Route::apiResource('/driver', 'DriverController');
 Route::apiResource('/origin', 'OriginController');
 Route::apiResource('/destination', 'DestinationController');
 Route::apiResource('/hour', 'HourController');
+Route::apiResource('/bus', 'BusController');

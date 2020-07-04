@@ -23,9 +23,6 @@ class HourController extends Controller
         ->join('origins', 'origins.id', '=', 'hours.originId')
         ->join('destinations', 'destinations.id', '=', 'hours.destinationId')
         ->select('*')->get();
-        dd($hour);
-        die();
-        
         return response()->json([
             "message" => "Lista de Horarios",
             "data" => $hour,
