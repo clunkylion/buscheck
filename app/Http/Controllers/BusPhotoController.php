@@ -22,16 +22,10 @@ class BusPhotoController extends Controller
     public function index()
     {
         //
-        $bus = DB::table('buses')->join('drivers', 'drivers.id', '=', 'buses.driverId')
-        ->join('hours', 'hours.id' ,'=' , 'buses.hourId')
-        ->get();
-        $driver = DB::table('drivers')->join('people','people.id', '=', 'drivers.peopleId')->get();
+        $photos = DB::table('bus_photos')->join('buses', 'buses.id', '=', 'bus_photos.busId')->get();
         return response()->json([
-            "data" => [
-                "driver" => $driver,
-                "bus" => $bus
-            ],
-            "status" =>Response::HTTP_OK
+            "photos" => [$photos],
+            "status" => Response::HTTP_OK
         ], Response::HTTP_OK);
     }
 
@@ -45,76 +39,24 @@ class BusPhotoController extends Controller
     public function store(Request $request)
     {
         //
-        $bus = Bus::create([
-            "status" => $request->input('status'),
-            "patent" => $request->input('patent'),
-            "brand" => $request->input('brand'),
-            "model" => $request->input('model'),
-            "numSeats" => $request->input('numSeats'),
-            "technicalReview" => $request->input('technicalReview'),
-            "driverId" => $request->input('driverId'),
-            "hourId" => $request->input('hourId'),
-            "enterpriseId" => $request->input('enterpriseId')
-        ]);
-        //rescartar foto de formulario
-        $rutaFoto = public_path('FotoBuses/Bus'.$bus->id);
-        $fotoArray = $request->file('photo');
-        $fotosCant = count($fotoArray);
-        for ($i=0; $i <$fotosCant ; $i++) { 
-            $urlFoto = 'bus/'.$bus->id.'.'.$fotoArray[$i]->extension();
-            $fotoArray[$i]->move($rutaFoto, $urlFoto);
+        $bus = Bus::find($request->idBus);
+        $routePhoto = public_path('busPhotos/'.$bus->id);
+        foreach ( $request->file('photo') as $photos){
+            $urlFoto = 'bus/'.$bus->id.'.'.$photos->extension();
+            $photos->move($routePhoto, $urlFoto);
             $photos = BusPhoto::create([
-                //"estado" => $request->input('estado'),
-                "photo" => $fotoArray[$i],
+                "photo" => $photos,
                 "busId" => $bus->id,
                 "driverId" => $bus->driverId,
                 "enterpriseId" => $bus->enterpriseId
-                ]);
-        }
-        $seat = Seat::create([
-            "number" => $request->input('number'),
-            "busId" => $bus->id,
-            "driverId" => $bus->idChofer,
-            "enterpriseId" => $bus->idEmpresa
-        ]);
-        return response()->json([
-            "message" => "Nuevo Bus Registrado",
-            "data" => [
-                "bus" => $bus,
-                "seat" => $seat,
-                "photos" =>$photos
-            ],
-            "status" => Response::HTTP_OK
-        ], Response::HTTP_OK);
-    }    
-        /*$files = $request->file('image');
-
-        foreach($files as $file){
-            $this->modelo::create([
-                'title' => $request->title,
-                'product_id' => base64_decode($request->product_id),
-                'image' => $upload->upload_global($file, 'productimage'),
-                'create_uid' => Auth::user()->id,
-                'write_uid' => Auth::user()->id
             ]);
         }
-    
-    function upload_global($file, $folder){ 
-    
-        $file_type = $file->getClientOriginalExtension(); 
-        $folder = $folder; 
-        $destinationPath = public_path() . '/uploads/'.$folder; 
-        $destinationPathThumb = public_path() . '/uploads/'.$folder.'thumb'; 
-        $filename = uniqid().'_'.time() . '.' . $file->getClientOriginalExtension();
-        $url = '/uploads/'.$folder.'/'.$filename; 
-    
-        if ($file->move($destinationPath.'/' , $filename)) { 
-            return $filename; 
-        }
+        return response()->json([
+            "message" => "Fotos Agregadas Correctamente",
+            "photos" => [$photos], 
+            "status" => Response::HTTP_OK
+        ], 200);
     }
-
-    }
-
     /**
      * Display the specified resource.
      *
@@ -124,18 +66,14 @@ class BusPhotoController extends Controller
     public function show($id)
     {
         //
-        $bus = Bus::find($id);
-        $driver = Driver::find($bus->idChofer);
-        $enterprise = Enterprise::find($bus->idEmpresa);
-        $hour = Hour::find($bus->idHorario);
+        $photos = DB::table('buses')
+        ->join('photo_buses', 'photo_buses.busId', '=', 'buses.id')
+        ->where('photo_buses.photo_buses', '=', $id )
+        ->get();
         return response()->json([
-            "data" => [
-            "bus" => $bus,
-            "driver" => $driver,
-            "enterprise" => $enterprise,
-            "hour" => $hour],
+            "data" => $photos,
             "status" => Response::HTTP_OK
-        ],Response::HTTP_OK);
+        ], Response::HTTP_OK);
     }
 
 
@@ -149,27 +87,22 @@ class BusPhotoController extends Controller
     public function update($id, Request $request)
     {
         //
-        $bus = Bus::find($id);
-        $bus->update([
-            "status" => $request->input('status'),
-            "patent" => $request->input('patent'),
-            "brand" => $request->input('brand'),
-            "model" => $request->input('model'),
-            "numSeats" => $request->input('numSeats'),
-            "technicalReview" => $request->input('technicalReview'),
-            "driverId" => $request->input('driverId'),
-            "hourId" => $request->input('hourId'),
-            "enterpriseId" => $request->input('enterpriseId')
-        ]);
-        /*$butaca = DB::table('users')([
-            "numero" => $request->input('numeroButacas'),
-            "idBus" => $bus->id,
-            "idChofer" => $bus->idChofer,
-            "idEmpresa" => $bus->idEmpresa
-        ]);*/
+        $routePhoto = public_path('/busPhotos'.'/');
+        $newPhoto = BusPhoto::find($id);
+        $bus = Bus::find($request->idBus);
+        foreach ( $request->file('photo') as $photos){
+            $urlFoto = time().'-bus'.$bus->id.'.'.$photos->extension();
+            $photos->move($routePhoto, $urlFoto);
+            $newPhoto->update([
+                "foto" => $photos,
+                "idBus" => $bus->id,
+                "idChofer" => $bus->driverId,
+                "idEmpresa" => $bus->enterpriseid
+            ]);
+        }
         return response()->json([
-            "message" => "Datos de bus actualizados",
-            "data" => $bus, 
+            "message" => "Fotos Agregadas Correctamente",
+            "fotosData" => [$photos],
             "status" => Response::HTTP_OK
         ], Response::HTTP_OK);
     }

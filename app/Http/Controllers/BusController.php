@@ -3,7 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Bus;
+use App\BusPhoto;
+use App\Driver;
+use App\Enterprise;
+use App\Hour;
+use App\Seat;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Symfony\Component\HttpFoundation\Response;
 
 class BusController extends Controller
 {
@@ -15,17 +22,18 @@ class BusController extends Controller
     public function index()
     {
         //
+        $bus = DB::table('buses')
+        ->join('drivers', 'drivers.id', '=', 'buses.driverId')
+        ->join('hours', 'hours.id' ,'=' , 'buses.hourId')
+        ->get();
+        return response()->json([
+            "data" => [
+                "bus" => $bus
+            ],
+            "status" =>Response::HTTP_OK
+        ], Response::HTTP_OK);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -36,6 +44,45 @@ class BusController extends Controller
     public function store(Request $request)
     {
         //
+        $bus = Bus::create([
+            "status" => $request->input('status'),
+            "patent" => $request->input('patent'),
+            "brand" => $request->input('brand'),
+            "model" => $request->input('model'),
+            "numSeats" => $request->input('numSeats'),
+            "technicalReview" => $request->input('technicalReview'),
+            "driverId" => $request->input('driverId'),
+            "hourId" => $request->input('hourId'),
+            "enterpriseId" => $request->input('enterpriseId')
+        ]);
+        $routePhoto = public_path().'/busPhotos/';
+        foreach ($request->file('photo') as $photos) {
+            $urlFoto = time().'-bus'.$bus->id.'.'.$photos->extension();
+            $name = $photos->getClientOriginalName();
+            $photos->move($routePhoto, $urlFoto);
+            $photos = BusPhoto::create([
+                "status" => "ok", 
+                "photo" => $name,
+                "busId" => $bus->id,
+                "driverId" => $request->input('driverId'),
+                "enterpriseId" => $request->input('enterpriseId') 
+            ]);
+        }
+        $seat = Seat::create([
+            "number" => $request->input('seatNum'),
+            "busId" => $bus->id,
+            "driverId" => $bus->driverId,
+            "enterpriseId" => $bus->enterpriseId
+        ]);
+        return response()->json([
+            "message" => "Nuevo Bus Registrado",
+            "data" => [
+                "bus" => $bus,
+                "seat" => $seat,
+                "photos" => [$photos]
+            ],
+            "status" => Response::HTTP_OK
+        ], Response::HTTP_OK);
     }
 
     /**
@@ -44,21 +91,24 @@ class BusController extends Controller
      * @param  \App\Bus  $bus
      * @return \Illuminate\Http\Response
      */
-    public function show(Bus $bus)
+    public function show($id)
     {
         //
+        $bus = Bus::find($id);
+        $driver = Driver::find($bus->driverId);
+        $enterprise = Enterprise::find($bus->enterpriseId);
+        $hour = Hour::find($bus->hourId);
+        return response()->json([
+            "data" => [
+                "bus" => $bus,
+                "driver" => $driver,
+                "enterprise" => $enterprise,
+                "hour" => $hour
+            ],
+            "status" => Response::HTTP_OK
+        ],Response::HTTP_OK);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Bus  $bus
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Bus $bus)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
@@ -67,9 +117,18 @@ class BusController extends Controller
      * @param  \App\Bus  $bus
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Bus $bus)
+    public function update($id, Request $request)
     {
         //
+        $bus = Bus::find($id);
+        $bus->update($request->all());
+        return response()->json([
+            "message" => "Bus actualizado",
+            "data" => [
+                "bus" => $bus
+            ],
+            "status" => Response::HTTP_OK
+        ], Response::HTTP_OK);
     }
 
     /**
