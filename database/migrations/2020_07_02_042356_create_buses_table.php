@@ -25,8 +25,8 @@ class CreateBusesTable extends Migration
             $table->unsignedBigInteger('driverId');
             $table->unsignedBigInteger('enterpriseId');
             $table->unsignedBigInteger('hourId')->nullable();
-            $table->foreign('driverId')->references('id')->on('drivers');
-            $table->foreign('hourId')->references('id')->on('hours');
+            $table->foreign('driverId')->references('id')->on('drivers')->onDelete('cascade');
+            $table->foreign('hourId')->references('id')->on('hours')->onDelete('cascade');
             $table->foreign('enterpriseId')->references('enterpriseId')->on('drivers');
         });
     }

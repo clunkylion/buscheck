@@ -27,3 +27,6 @@ Route::apiResource('/origin', 'OriginController');
 Route::apiResource('/destination', 'DestinationController');
 Route::apiResource('/hour', 'HourController');
 Route::apiResource('/bus', 'BusController');
+Route::apiResource('/photoBus', 'BusPhotoController');
+Route::apiResource('/ticket', 'TicketController');
+Route::apiResource('/totalSale', 'TotalSaleController');

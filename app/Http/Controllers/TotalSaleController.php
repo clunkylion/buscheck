@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\TotalSale;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Symfony\Component\HttpFoundation\Response;
 
 class TotalSaleController extends Controller
 {
@@ -15,17 +17,19 @@ class TotalSaleController extends Controller
     public function index()
     {
         //
+        $totalSale =  DB::table('total_sales')
+        ->join('drivers', 'drivers.id', '=', 'total_sales.driverId')
+        ->join('buses', 'buses.id', '=', 'total_sales.busId')
+        ->join('enterprises', 'enterprises.id', '=', 'total_sales.enterpriseId')
+        ->join('hours', 'hours.id', '=', 'total_sales.hourId')
+        ->get();
+        return response()->json([
+            "message" => "Total de Ventas",
+            "data" => $totalSale,
+            "status" => Response::HTTP_OK
+        ], Response::HTTP_OK);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -36,6 +40,12 @@ class TotalSaleController extends Controller
     public function store(Request $request)
     {
         //
+        $totalSale = TotalSale::create($request->all());
+        return response()->json([
+            "message" => "Total de venta creado",
+            "data" => $totalSale,
+            "status" => Response::HTTP_OK
+        ], Response::HTTP_OK);
     }
 
     /**
@@ -44,21 +54,24 @@ class TotalSaleController extends Controller
      * @param  \App\TotalSale  $totalSale
      * @return \Illuminate\Http\Response
      */
-    public function show(TotalSale $totalSale)
+    public function show($id)
     {
         //
+        $totalSale =  DB::table('total_sales')
+        ->join('drivers', 'drivers.id', '=', 'total_sales.driverId')
+        ->join('buses', 'buses.id', '=', 'total_sales.busId')
+        ->join('enterprises', 'enterprises.id', '=', 'total_sales.enterpriseId')
+        ->join('hours', 'hours.id', '=', 'total_sales.hourId')
+        ->where('total_sales.id'. '=', $id)
+        ->get();
+        return response()->json([
+            "message" => "Total de Ventas :".$id,
+            "data" => $totalSale,
+            "status" => Response::HTTP_OK
+        ], Response::HTTP_OK);
+        
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\TotalSale  $totalSale
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(TotalSale $totalSale)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
