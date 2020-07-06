@@ -19,14 +19,20 @@ use Illuminate\Support\Facades\Route;
 });*/
 
 //API ROUTES
-Route::apiResource('/enterprise', 'EnterpriseController');
-Route::apiResource('/client', 'ClientController');
-Route::apiResource('/user', 'UserController');
-Route::apiResource('/driver', 'DriverController');
-Route::apiResource('/origin', 'OriginController');
-Route::apiResource('/destination', 'DestinationController');
-Route::apiResource('/hour', 'HourController');
-Route::apiResource('/bus', 'BusController');
-Route::apiResource('/photoBus', 'BusPhotoController');
-Route::apiResource('/ticket', 'TicketController');
-Route::apiResource('/totalSale', 'TotalSaleController');
+
+
+Route::group(['middleware' => 'auth:api'], function(){
+
+    Route::apiResource('/enterprise', 'EnterpriseController');
+    Route::apiResource('/client', 'ClientController');
+    Route::apiResource('/user', 'UserController');
+    Route::apiResource('/driver', 'DriverController');
+    Route::apiResource('/origin', 'OriginController');
+    Route::apiResource('/destination', 'DestinationController');
+    Route::apiResource('/hour', 'HourController');
+    Route::apiResource('/bus', 'BusController');
+    Route::apiResource('/photoBus', 'BusPhotoController');
+    Route::apiResource('/ticket', 'TicketController');
+    Route::apiResource('/totalSale', 'TotalSaleController');
+
+});
