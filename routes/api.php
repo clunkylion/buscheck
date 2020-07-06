@@ -18,9 +18,10 @@ use Illuminate\Support\Facades\Route;
     return $request->user();
 });*/
 
-//API ROUTES
-
-
+//Public Routes
+Route::post('/loginApp', 'AuthController@loginApp');
+Route::post('/loginWeb', 'AuthController@loginWeb');
+//Protected Routes
 Route::group(['middleware' => 'auth:api'], function(){
 
     Route::apiResource('/enterprise', 'EnterpriseController');
