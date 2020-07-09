@@ -16,7 +16,7 @@ class CreateSeatsTable extends Migration
         Schema::create('seats', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->timestamps();
-            $table->string('status', 60)->nullable();
+            $table->string('status', 60)->default('Disponible');
             $table->integer('number');
             //foreign keys
             $table->unsignedBigInteger('busId');

@@ -18,9 +18,17 @@ class DriverController extends Controller
     public function index()
     {
         //
-        $driver = DB::table('drivers')->join('people','people.id', '=', 'drivers.peopleId')->get();
+        $driver = DB::table('drivers')
+            ->join('people','people.id', '=', 'drivers.peopleId')
+            ->select('drivers.id')->get();
+        $people = DB::table('drivers')
+            ->join('people','people.id', '=', 'drivers.peopleId')
+            ->select('people.*')->get();
         return response()->json([
-            "data" => $driver,
+            "data" => [
+                "driverId" => $driver,
+                "people" => $people
+            ],
             "status" => Response::HTTP_OK
         ], Response::HTTP_OK);
     }
@@ -69,12 +77,17 @@ class DriverController extends Controller
      */
     public function show($id)
     {
-        //
         $driver =DB::table('drivers')
-        ->join('people', 'people.id', '=' , 'drivers.peopleId')
-        ->where('drivers.id', '=', $id)->get();
+            ->join('people', 'people.id', '=' , 'drivers.peopleId')
+            ->select('drivers.id')->where('drivers.id', '=', $id)->get();
+        $people = DB::table('drivers')
+            ->join('people','people.id', '=', 'drivers.peopleId')
+            ->select('people.*')->where('drivers.id', '=', $id)->get();
         return response()->json([
-            "Data" => $driver,
+            "data" => [
+                "driver" => $driver,
+                "people" => $people
+            ],
             "status" => Response::HTTP_OK
         ],Response::HTTP_OK);
     }

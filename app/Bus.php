@@ -22,6 +22,10 @@ class Bus extends Model
     {
         return $this->belongsTo('App\Driver', 'driverId');
     }
+    public function users()
+    {
+        return $this->hasMany('App\User');
+    }
     public function hours()
     {
         return $this->belongsTo('App\Hour', 'hourId');

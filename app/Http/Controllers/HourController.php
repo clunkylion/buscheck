@@ -22,10 +22,22 @@ class HourController extends Controller
         $hour = DB::table('hours')
         ->join('origins', 'origins.id', '=', 'hours.originId')
         ->join('destinations', 'destinations.id', '=', 'hours.destinationId')
-        ->select('*')->get();
+        ->select('hours.id', 'hours.hour')->get();
+        $origin = DB::table('hours')
+        ->join('origins', 'origins.id', '=', 'hours.originId')
+        ->join('destinations', 'destinations.id', '=', 'hours.destinationId')
+        ->select('origins.id','origins.busStation', 'origins.city')->get();
+        $destination = DB::table('hours')
+        ->join('origins', 'origins.id', '=', 'hours.originId')
+        ->join('destinations', 'destinations.id', '=', 'hours.destinationId')
+        ->select('destinations.id','destinations.busStation', 'destinations.city')->get();
         return response()->json([
             "message" => "Lista de Horarios",
-            "data" => $hour,
+            "data" => [
+                "hour" => $hour,
+                "origin" => $origin,
+                "destination" => $destination
+            ],
             "status" => Response::HTTP_OK
         ], Response::HTTP_OK);
     }
@@ -75,11 +87,26 @@ class HourController extends Controller
     {
         //
         $hour = DB::table('hours')
-        ->join('origins', 'origins.id', '=', 'hours.originId')
-        ->join('destinations', 'destinations.id', '=', 'hours.destinationId')
-        ->where('hours.id', '=', $id)->get();
+            ->join('origins', 'origins.id', '=', 'hours.originId')
+            ->join('destinations', 'destinations.id', '=', 'hours.destinationId')
+            ->select('hours.id', 'hours.hour')
+            ->where('hours.id', '=', $id)->get();
+        $origin = DB::table('hours')
+            ->join('origins', 'origins.id', '=', 'hours.originId')
+            ->join('destinations', 'destinations.id', '=', 'hours.destinationId')
+            ->select('origins.id','origins.busStation', 'origins.city')
+            ->where('hours.id', '=', $id)->get();
+        $destination = DB::table('hours')
+            ->join('origins', 'origins.id', '=', 'hours.originId')
+            ->join('destinations', 'destinations.id', '=', 'hours.destinationId')
+            ->select('destinations.id','destinations.busStation', 'destinations.city')
+            ->where('hours.id', '=', $id)->get();
         return response()->json([
-            "data" => $hour,
+            "data" => [
+                "hour" => $hour,
+                "origin" => $origin,
+                "destination" => $destination
+            ],
             "status" => Response::HTTP_OK
         ], Response::HTTP_OK);
     }

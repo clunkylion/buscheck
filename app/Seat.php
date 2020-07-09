@@ -8,7 +8,6 @@ class Seat extends Model
 {
     //
     protected $fillable = [
-        "estado",
         "number",
         "busId",
         "driverId",

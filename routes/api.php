@@ -21,15 +21,17 @@ use Illuminate\Support\Facades\Route;
 //Public Routes
 Route::post('/loginApp', 'AuthController@loginApp');
 Route::post('/loginWeb', 'AuthController@loginWeb');
+Route::post('/signup', 'AuthController@signup');
+Route::apiResource('/enterprise', 'EnterpriseController');
 //Protected Routes
 Route::group(['middleware' => 'auth:api'], function(){
-
-    Route::apiResource('/enterprise', 'EnterpriseController');
+    
     Route::apiResource('/client', 'ClientController');
     Route::apiResource('/user', 'UserController');
     Route::apiResource('/driver', 'DriverController');
     Route::apiResource('/origin', 'OriginController');
     Route::apiResource('/destination', 'DestinationController');
+    Route::apiResource('/seat', 'SeatController');
     Route::apiResource('/hour', 'HourController');
     Route::apiResource('/bus', 'BusController');
     Route::apiResource('/photoBus', 'BusPhotoController');

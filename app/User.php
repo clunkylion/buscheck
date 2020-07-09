@@ -23,7 +23,8 @@ class User extends Authenticatable
         "lastSession",
         "userStatus",
         "enterpriseId",
-        "peopleId"
+        "peopleId",
+        "busId"
     ];
 
     /**
@@ -43,6 +44,10 @@ class User extends Authenticatable
     public function people()
     {
         return $this->belongsTo('App\People', 'peopleId');
+    }
+    public function bus()
+    {
+        return $this->belongsTo('App\Bus', 'busId');
     }
 
 }

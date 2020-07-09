@@ -20,10 +20,12 @@ class CreateUsersTable extends Migration
             $table->string('role');
             $table->unsignedBigInteger('enterpriseId');
             $table->unsignedBigInteger('peopleId');
+            $table->unsignedBigInteger('busId')->nullable();
             $table->string('lastSession');
             $table->integer('userStatus')->nullable();
             $table->rememberToken();
             $table->timestamps();
+            $table->foreign('busId')->references('id')->on('buses');
             $table->foreign('enterpriseId')->references('id')->on('enterprises');
             $table->foreign('peopleId')->references('id')->on('people');
         });

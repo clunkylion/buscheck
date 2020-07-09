@@ -14,7 +14,7 @@ class SeatController extends Controller
      */
     public function index()
     {
-        //
+        //  
     }
 
     /**
@@ -47,6 +47,7 @@ class SeatController extends Controller
     public function show(Seat $seat)
     {
         //
+        return $seat;
     }
 
     /**

@@ -22,19 +22,14 @@ class BusController extends Controller
     public function index()
     {
         //
-        $bus = DB::table('buses')
-        ->join('drivers', 'drivers.id', '=', 'buses.driverId')
-        ->join('hours', 'hours.id' ,'=' , 'buses.hourId')
-        ->get();
+        $bus = DB::table('buses')->select('buses.*')->get();
         return response()->json([
             "data" => [
-                "bus" => $bus
+                "bus" => $bus,
             ],
             "status" =>Response::HTTP_OK
         ], Response::HTTP_OK);
     }
-
-
     /**
      * Store a newly created resource in storage.
      *
@@ -57,7 +52,7 @@ class BusController extends Controller
         ]);
         $routePhoto = public_path().'/busPhotos/';
         foreach ($request->file('photo') as $photos) {
-            $urlFoto = time().'-bus'.$bus->id.'.'.$photos->extension();
+            $urlFoto = 'bus'.$bus->id.'.'.$photos->extension();
             $name = $photos->getClientOriginalName();
             $photos->move($routePhoto, $urlFoto);
             $photos = BusPhoto::create([
@@ -68,12 +63,15 @@ class BusController extends Controller
                 "enterpriseId" => $request->input('enterpriseId') 
             ]);
         }
-        $seat = Seat::create([
-            "number" => $request->input('seatNum'),
-            "busId" => $bus->id,
-            "driverId" => $bus->driverId,
-            "enterpriseId" => $bus->enterpriseId
-        ]);
+        $seatsCant = $request->input('numSeats');
+        for ($i=1; $i <= (int)$seatsCant ; $i++) { 
+            $seat = Seat::create([
+                "number" => $i,
+                "busId" => $bus->id,
+                "driverId" => $bus->driverId,
+                "enterpriseId" => $bus->enterpriseId
+            ]);
+        }
         return response()->json([
             "message" => "Nuevo Bus Registrado",
             "data" => [
@@ -98,12 +96,14 @@ class BusController extends Controller
         $driver = Driver::find($bus->driverId);
         $enterprise = Enterprise::find($bus->enterpriseId);
         $hour = Hour::find($bus->hourId);
+        $seat = Seat::select('number', 'status')->where('busId', '=', $id)->get();
         return response()->json([
             "data" => [
                 "bus" => $bus,
                 "driver" => $driver,
                 "enterprise" => $enterprise,
-                "hour" => $hour
+                "hour" => $hour,
+                "seats" => [$seat]
             ],
             "status" => Response::HTTP_OK
         ],Response::HTTP_OK);
