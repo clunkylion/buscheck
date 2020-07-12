@@ -48,8 +48,10 @@ class EnterpriseController extends Controller
      */
     public function show(Enterprise $enterprise)
     {
-        //
-        return $enterprise;
+        return response()->json([
+            "data" => $enterprise,
+            "status" => Response::HTTP_OK
+        ], Response::HTTP_OK);
     }
 
     /**
