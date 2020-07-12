@@ -16,8 +16,8 @@ class CreateOriginsTable extends Migration
         Schema::create('origins', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->timestamps();
-            $table->string('busStation', 70);
-            $table->string('city', 70);
+            $table->string('originStation', 70);
+            $table->string('originCity', 70);
         });
     }
 

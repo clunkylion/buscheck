@@ -16,8 +16,8 @@ class CreateDestinationsTable extends Migration
         Schema::create('destinations', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->timestamps();
-            $table->string('busStation', 70);
-            $table->string('city', 70);
+            $table->string('destinationStation', 70);
+            $table->string('destinationCity', 70);
         });
     }
 
