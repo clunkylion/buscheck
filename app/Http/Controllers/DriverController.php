@@ -17,17 +17,11 @@ class DriverController extends Controller
      */
     public function index()
     {
-        //
-        $driver = DB::table('drivers')
-            ->join('people','people.id', '=', 'drivers.peopleId')
-            ->select('drivers.id')->get();
-        $people = DB::table('drivers')
-            ->join('people','people.id', '=', 'drivers.peopleId')
-            ->select('people.*')->get();
+        $driver = Driver::join('people', 'people.id', '=', 'drivers.peopleId')
+        ->select('drivers.id', 'people.rut', 'people.name', 'people.lastName', 'people.phone', 'people.email')->get();
         return response()->json([
             "data" => [
-                "driverId" => $driver,
-                "people" => $people
+                "driver" => $driver,
             ],
             "status" => Response::HTTP_OK
         ], Response::HTTP_OK);
@@ -77,16 +71,12 @@ class DriverController extends Controller
      */
     public function show($id)
     {
-        $driver =DB::table('drivers')
-            ->join('people', 'people.id', '=' , 'drivers.peopleId')
-            ->select('drivers.id')->where('drivers.id', '=', $id)->get();
-        $people = DB::table('drivers')
-            ->join('people','people.id', '=', 'drivers.peopleId')
-            ->select('people.*')->where('drivers.id', '=', $id)->get();
+        $driver = Driver::join('people', 'people.id', '=' , 'drivers.peopleId')
+        ->select('drivers.id', 'people.rut', 'people.name', 'people.lastName', 'people.phone', 'people.email', 'people.dateBirth')
+        ->where('drivers.id', '=', $id)->get();
         return response()->json([
             "data" => [
-                "driver" => $driver,
-                "people" => $people
+                "driver" => $driver
             ],
             "status" => Response::HTTP_OK
         ],Response::HTTP_OK);
