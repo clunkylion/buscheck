@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use ErrorException;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Validation\UnauthorizedException;
@@ -10,6 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\Routing\Exception\MethodNotAllowedException;
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -60,6 +62,18 @@ class Handler extends ExceptionHandler
         //in this place work with Model not found exception .....
         //dd($exception);
         //die();
+        if ($exception instanceof AuthenticationException) {
+            return response()->json([
+                "message" => "Debes estar autenticado",
+                "status" => Response::HTTP_UNAUTHORIZED
+            ],Response::HTTP_UNAUTHORIZED);
+        }
+        if ($exception instanceof RouteNotFoundException) {
+            return response()->json([
+                "message" => "Debes estar autenticado",
+                "status" => Response::HTTP_UNAUTHORIZED
+            ],Response::HTTP_UNAUTHORIZED);
+        }
         if ($exception instanceof ErrorException) {
             return response()->json([
                 "message" => "Error en el servidor",
