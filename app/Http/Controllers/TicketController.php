@@ -18,7 +18,8 @@ class TicketController extends Controller
     public function index()
     {
         //
-        $ticket = DB::table('tickets')->join('users', 'users.id', '=', 'tickets.userId')->get();
+        $ticket = Ticket::join('users', 'users.id', '=', 'tickets.userId')
+        ->select('tickets.*', 'users.username', 'users.role', 'users.busId')->get();
         return response()->json([
             "data" => $ticket,
             "status" => Response::HTTP_OK
@@ -51,13 +52,12 @@ class TicketController extends Controller
      */
     public function show($id)
     {
-        //
-        $enterprise = Enterprise::findOrFail($id);
-        $ticket = Ticket::find($id);
+        $ticket = Ticket::join('users', 'users.id', '=', 'tickets.userId')
+        ->select('tickets.*', 'users.username', 'users.role', 'users.busId')
+        ->where('tickets.id', '=', $id)->get();
         return response()->json([
             "data" => [
-                "ticket" => $ticket,
-                "empresa" =>$enterprise
+                "ticket" => $ticket
             ],
             "status" => Response::HTTP_OK
         ],Response::HTTP_OK);

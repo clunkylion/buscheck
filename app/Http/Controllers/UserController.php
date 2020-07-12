@@ -18,11 +18,12 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
-        $user = DB::table('users')->join('people', 'people.id', '=', 'users.peopleId')->get();
+        $user = User::join('people', 'people.id', '=', 'users.peopleId')
+        ->select('users.*', 'people.rut', 'people.name', 'people.lastName', 'people.phone', 'people.email')->get();
         return response()->json([
-            "message" => "Lista de Usuarios",
-            "Data" => $user,
+            "Data" => [
+               "user" => $user,
+            ],
             "status" => Response::HTTP_OK
         ], Response::HTTP_OK);
     }
@@ -74,9 +75,8 @@ class UserController extends Controller
     public function show($id)
     {
         //
-        $user = DB::table('users')
-        ->join('people', 'people.id', '=', 'users.peopleId')
-        ->where('users.id', '=', $id)->get();
+        $user = User::join('people', 'people.id', '=', 'users.peopleId')
+        ->select('users.*', 'people.rut', 'people.name', 'people.lastName', 'people.phone', 'people.email', 'people.dateBirth')->where('users.id', '=', $id)->get();
         return response()->json([
             "data" => $user,
             "status" => Response::HTTP_OK
