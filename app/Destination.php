@@ -8,8 +8,8 @@ class Destination extends Model
 {
     //
     protected $fillable = [
-        "busStation",
-        "city",
+        "destinationStation",
+        "destinationCity",
     ];
     public function hours(){
         return $this->hasMany('App\Hour');

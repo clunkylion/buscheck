@@ -35,4 +35,8 @@ class TotalSale extends Model
     {
         return $this->belongsTo('App\Enterprise', 'enterpriseId');
     }
+    public function hour()
+    {
+        return $this->belongsTo('App\Hour', 'hourId');
+    }
 }

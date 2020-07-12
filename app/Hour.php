@@ -25,4 +25,8 @@ class Hour extends Model
     {
         return $this->hasMany('App\Bus');
     }
+    public function total_sales()
+    {
+        return $this->hasMany('App\TotalSale');
+    }
 }
