@@ -17,12 +17,22 @@ class TotalSaleController extends Controller
     public function index()
     {
         //
-        $totalSale =  DB::table('total_sales')
-        ->join('drivers', 'drivers.id', '=', 'total_sales.driverId')
-        ->join('buses', 'buses.id', '=', 'total_sales.busId')
-        ->join('enterprises', 'enterprises.id', '=', 'total_sales.enterpriseId')
-        ->join('hours', 'hours.id', '=', 'total_sales.hourId')
+        $totalSale =  TotalSale::select('total_sales.*','buses.patent', 'buses.model', 'enterprises.enterpriseName', 'users.username', 'users.role', 'hours.hour')
+        ->from('total_sales')
+        ->join('buses', function($query){
+            $query->on('buses.id', '=', 'total_sales.busId');
+        })
+        ->join('enterprises', function($query){
+            $query->on('enterprises.id', '=', 'total_sales.enterpriseId');
+        })
+        ->join('users', function($query){
+            $query->on('users.id', '=', 'total_sales.userId');
+        })
+        ->join('hours', function($query){
+            $query->on('hours.id', '=', 'total_sales.hourId');
+        })
         ->get();
+        //$totalSale = TotalSale::all();
         return response()->json([
             "message" => "Total de Ventas",
             "data" => $totalSale,
@@ -57,12 +67,21 @@ class TotalSaleController extends Controller
     public function show($id)
     {
         //
-        $totalSale =  DB::table('total_sales')
-        ->join('drivers', 'drivers.id', '=', 'total_sales.driverId')
-        ->join('buses', 'buses.id', '=', 'total_sales.busId')
-        ->join('enterprises', 'enterprises.id', '=', 'total_sales.enterpriseId')
-        ->join('hours', 'hours.id', '=', 'total_sales.hourId')
-        ->where('total_sales.id'. '=', $id)
+        $totalSale =  TotalSale::select('total_sales.*','buses.patent', 'buses.model', 'enterprises.enterpriseName', 'users.username', 'users.role', 'hours.hour')
+        ->from('total_sales')
+        ->join('buses', function($query){
+            $query->on('buses.id', '=', 'total_sales.busId');
+        })
+        ->join('enterprises', function($query){
+            $query->on('enterprises.id', '=', 'total_sales.enterpriseId');
+        })
+        ->join('users', function($query){
+            $query->on('users.id', '=', 'total_sales.userId');
+        })
+        ->join('hours', function($query){
+            $query->on('hours.id', '=', 'total_sales.hourId');
+        })
+        ->where('total_sales.id', '=', $id)
         ->get();
         return response()->json([
             "message" => "Total de Ventas :".$id,
