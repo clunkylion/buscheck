@@ -22,7 +22,8 @@ class BusPhotoController extends Controller
     public function index()
     {
         //
-        $photos = DB::table('bus_photos')->join('buses', 'buses.id', '=', 'bus_photos.busId')->get();
+        $photos = BusPhoto::join('buses', 'buses.id', '=', 'bus_photos.busId')
+        ->select('bus_photos.*', 'buses.patent', 'buses.brand', 'buses.model')->get();
         return response()->json([
             "photos" => [$photos],
             "status" => Response::HTTP_OK
@@ -66,17 +67,21 @@ class BusPhotoController extends Controller
     public function show($id)
     {
         //
-        $photos = DB::table('buses')
-        ->join('photo_buses', 'photo_buses.busId', '=', 'buses.id')
-        ->where('photo_buses.photo_buses', '=', $id )
-        ->get();
-        return response()->json([
-            "data" => $photos,
-            "status" => Response::HTTP_OK
-        ], Response::HTTP_OK);
+        $photos = BusPhoto::join('buses', 'buses.id', '=', 'bus_photos.busId')
+        ->select('bus_photos.*', 'buses.patent', 'buses.brand', 'buses.model')
+        ->where('bus_photos.id', '=', $id)->get();
+        if ($photos->isEmpty()) {
+            return response()->json([
+                "message" => "No encontrado", 
+                "status" => Response::HTTP_NOT_FOUND
+            ], Response::HTTP_NOT_FOUND);
+        }else{    
+            return response()->json([
+                "data" => $photos,
+                "status" => Response::HTTP_OK
+            ], Response::HTTP_OK);
+        }
     }
-
-
     /**
      * Update the specified resource in storage.
      *
@@ -89,7 +94,7 @@ class BusPhotoController extends Controller
         //
         $routePhoto = public_path('/busPhotos'.'/');
         $newPhoto = BusPhoto::find($id);
-        $bus = Bus::find($request->idBus);
+        $bus = Bus::findOrFail($request->idBus);
         foreach ( $request->file('photo') as $photos){
             $urlFoto = time().'-bus'.$bus->id.'.'.$photos->extension();
             $photos->move($routePhoto, $urlFoto);

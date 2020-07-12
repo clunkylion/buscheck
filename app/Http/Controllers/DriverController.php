@@ -74,12 +74,19 @@ class DriverController extends Controller
         $driver = Driver::join('people', 'people.id', '=' , 'drivers.peopleId')
         ->select('drivers.id', 'people.rut', 'people.name', 'people.lastName', 'people.phone', 'people.email', 'people.dateBirth')
         ->where('drivers.id', '=', $id)->get();
-        return response()->json([
-            "data" => [
-                "driver" => $driver
-            ],
-            "status" => Response::HTTP_OK
-        ],Response::HTTP_OK);
+        if ($driver->isEmpty()) {
+            return response()->json([
+                "message" => "No encontrado", 
+                "status" => Response::HTTP_NOT_FOUND
+            ], Response::HTTP_NOT_FOUND);
+        }else{
+            return response()->json([
+                "data" => [
+                    "driver" => $driver
+                ],
+                "status" => Response::HTTP_OK
+            ],Response::HTTP_OK);
+        }    
     }
 
 
@@ -93,7 +100,7 @@ class DriverController extends Controller
     public function update($id,Request $request)
     {
         //
-        $driver = Driver::find($id);
+        $driver = Driver::findOrFail($id);
         $peopleId = $driver->peopleId;
         $people = People::find($peopleId);
         $people->update([
@@ -124,7 +131,7 @@ class DriverController extends Controller
     public function destroy($id)
     {
         //
-        $driver = Driver::find($id);
+        $driver = Driver::findOrFail($id);
         $peopleId = $driver->peopleId;
         $people = People::find($peopleId);
         $people->delete();

@@ -92,7 +92,7 @@ class BusController extends Controller
     public function show($id)
     {
         //
-        $bus = Bus::find($id);
+        $bus = Bus::findOrFail($id);
         $driver = Driver::find($bus->driverId);
         $enterprise = Enterprise::find($bus->enterpriseId);
         $hour = Hour::find($bus->hourId);
@@ -120,7 +120,7 @@ class BusController extends Controller
     public function update($id, Request $request)
     {
         //
-        $bus = Bus::find($id);
+        $bus = Bus::findOrFail($id);
         $bus->update($request->all());
         return response()->json([
             "message" => "Bus actualizado",

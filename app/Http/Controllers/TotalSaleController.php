@@ -31,7 +31,7 @@ class TotalSaleController extends Controller
         ->join('hours', function($query){
             $query->on('hours.id', '=', 'total_sales.hourId');
         })
-        ->get();
+        ->latest('total_sales.id')->get();
         //$totalSale = TotalSale::all();
         return response()->json([
             "message" => "Total de Ventas",
@@ -83,12 +83,18 @@ class TotalSaleController extends Controller
         })
         ->where('total_sales.id', '=', $id)
         ->get();
-        return response()->json([
-            "message" => "Total de Ventas :".$id,
-            "data" => $totalSale,
-            "status" => Response::HTTP_OK
-        ], Response::HTTP_OK);
-        
+        if ($totalSale->isEmpty()) {
+            return response()->json([
+                "message" => "No encontrado",
+                "status" => Response::HTTP_NOT_FOUND
+            ], Response::HTTP_NOT_FOUND);
+        }else{
+            return response()->json([
+                "message" => "Total de Ventas N°".$id,
+                "data" => $totalSale,
+                "status" => Response::HTTP_OK
+            ], Response::HTTP_OK);
+        }
     }
 
 

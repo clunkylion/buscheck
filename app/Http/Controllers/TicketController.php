@@ -55,12 +55,19 @@ class TicketController extends Controller
         $ticket = Ticket::join('users', 'users.id', '=', 'tickets.userId')
         ->select('tickets.*', 'users.username', 'users.role', 'users.busId')
         ->where('tickets.id', '=', $id)->get();
-        return response()->json([
-            "data" => [
-                "ticket" => $ticket
-            ],
-            "status" => Response::HTTP_OK
-        ],Response::HTTP_OK);
+        if ($ticket->isEmpty()) {
+            return response()->json([
+                "message" => "No encontrado", 
+                "status" => Response::HTTP_NOT_FOUND
+            ], Response::HTTP_NOT_FOUND);
+        }else{
+            return response()->json([
+                "data" => [
+                    "ticket" => $ticket
+                ],
+                "status" => Response::HTTP_OK
+            ],Response::HTTP_OK);
+        }    
     }
 
     
@@ -75,7 +82,7 @@ class TicketController extends Controller
     public function update($id, Request $request)
     {
         //
-        $ticket = Ticket::find($id);
+        $ticket = Ticket::findOrFail($id);
         $ticket->update($request->all());
         return response()->json([
             "message" => "Boleto actualizado correctamente",

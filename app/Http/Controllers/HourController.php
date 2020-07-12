@@ -89,12 +89,20 @@ class HourController extends Controller
                 $query->on('destinations.id', '=', 'hours.destinationId');
             })
             ->where('hours.id', '=', $id)->get();
-        return response()->json([
-            "data" => [
-                "hour" => $hour
-            ],
-            "status" => Response::HTTP_OK
-        ], Response::HTTP_OK);
+        if ($hour->isEmpty()) {
+            return response()->json([
+                "message" => "No encontrado", 
+                "status" => Response::HTTP_NOT_FOUND
+            ], Response::HTTP_NOT_FOUND);
+        }else{
+            return response()->json([
+                "data" => [
+                    "hour" => $hour
+                ],
+                "status" => Response::HTTP_OK
+            ], Response::HTTP_OK);
+        };
+        
     }
 
     /**
@@ -107,7 +115,7 @@ class HourController extends Controller
     public function update($id, Request $request)
     {
         //
-        $hour = Hour::find($id);
+        $hour = Hour::findOrFail($id);
         $originId = $hour->originId;
         $destinationId = $hour->destinationId;
         $origin = Origin::find($originId);

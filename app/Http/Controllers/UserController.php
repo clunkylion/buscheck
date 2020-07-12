@@ -77,10 +77,18 @@ class UserController extends Controller
         //
         $user = User::join('people', 'people.id', '=', 'users.peopleId')
         ->select('users.*', 'people.rut', 'people.name', 'people.lastName', 'people.phone', 'people.email', 'people.dateBirth')->where('users.id', '=', $id)->get();
-        return response()->json([
-            "data" => $user,
-            "status" => Response::HTTP_OK
-        ], Response::HTTP_OK);
+        if ($user->isEmpty()) {
+            return response()->json([
+                "message" => "No encontrado",
+                "status" => Response::HTTP_NOT_FOUND
+            ], Response::HTTP_NOT_FOUND);  
+        }else{
+            return response()->json([
+                "data" => $user,
+                "status" => Response::HTTP_OK
+            ], Response::HTTP_OK);
+        }
+        
     }
 
 
@@ -94,7 +102,7 @@ class UserController extends Controller
     public function update($id,Request $request)
     {
         //
-        $user = User::find($id);
+        $user = User::findOrFail($id);
         $peopleId = $user->peopleId;
         $people = People::find($peopleId);
         $people->update([
@@ -130,7 +138,7 @@ class UserController extends Controller
     public function destroy($id)
     {
         //
-        $user = User::find($id);
+        $user = User::findOrFail($id);
         $peopleId = $user->peopleId;
         $people = People::find($peopleId);
         $people->delete();

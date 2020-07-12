@@ -50,7 +50,10 @@ class OriginController extends Controller
     public function show(Origin $origin)
     {
         //
-        return $origin;
+        return response()->json([
+            "data" => $origin,
+            "status" => Response::HTTP_OK
+        ], Response::HTTP_OK);
     }
 
 
@@ -64,7 +67,7 @@ class OriginController extends Controller
     public function update($id, Request $request)
     {
         //
-        $origin=Origin::find($id);
+        $origin=Origin::findOrFail($id);
         $origin->update($request->all());
         return response()->json([
             "message" => "Datos del origen actualizados",

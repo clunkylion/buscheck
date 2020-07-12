@@ -50,7 +50,10 @@ class DestinationController extends Controller
     public function show(Destination $destination)
     {
         //
-        return $destination;
+        return response()->json([
+            "data" => $destination,
+            "status" => Response::HTTP_OK
+        ], Response::HTTP_OK);
     }
 
 
@@ -64,7 +67,7 @@ class DestinationController extends Controller
     public function update($id,Request $request)
     {
         //
-        $destination = Destination::find($id);
+        $destination = Destination::findOrFail($id);
         $destination->update($request->all());
         return response()->json([
             "message" => "Datos del Destino actualizados",
