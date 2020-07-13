@@ -24,8 +24,8 @@ class AuthController extends Controller
             }else{
                 return response()->json([
                     "message" => "Contraseña o Nombre de Usuario Incorrectos",
-                    "status" => Response::HTTP_BAD_REQUEST
-                ], Response::HTTP_BAD_REQUEST);
+                    "status" => 401
+                ], 401);
             }
         } else {
             return response()->json([
@@ -47,8 +47,8 @@ class AuthController extends Controller
             }else{
                 return response()->json([
                     "message" => "Contraseña o Nombre de Usuario Incorrectos",
-                    "status" => Response::HTTP_BAD_REQUEST
-                ], Response::HTTP_BAD_REQUEST);
+                    "status" => 401
+                ], 401);
             }
         } else {
             return response()->json([
