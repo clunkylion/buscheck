@@ -28,6 +28,7 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
         Passport::routes();
         Passport::$ignoreCsrfToken = true;
+        //probando git pull
         /*Passport::tokensExpireIn(Carbon::now()->addYears(20));
         Passport::refreshTokensExpireIn(Carbon::now()->addYears(20));*/
         Passport::cookie('user_cookie');
