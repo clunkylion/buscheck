@@ -1,7 +1,7 @@
 <?php
 use Illuminate\Support\Str;
 $url = parse_url(getenv("CLEARDB_DATABASE_URL"));
-$host = $url["us-cdbr-east-02.cleardb.com"] ?? null;
+$host = $url["us-cdbr-east-02.cleardb.com"];
 $username = $url["b494a6108b614f"] ?? null;
 $password = $url["9b3b5cfb"] ?? null;
 $database = substr($url["heroku_425d8e3eb74c03b"], 1);
