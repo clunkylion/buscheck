@@ -80,12 +80,12 @@ class Handler extends ExceptionHandler
                 "status" => Response::HTTP_INTERNAL_SERVER_ERROR
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-        /*if ($exception instanceof MethodNotAllowedHttpException) {
+        if ($exception instanceof MethodNotAllowedHttpException) {
             return response()->json([
                 "message" => "El método no es soportado en está ruta, puede ser POST, GET, PUT, PATCH, DELETE",
                 "status" => Response::HTTP_METHOD_NOT_ALLOWED
             ], Response::HTTP_METHOD_NOT_ALLOWED);
-        }*/
+        }
         if ($exception instanceof ModelNotFoundException) {
             return response()->json([
                 "message" => "No encontrado",
