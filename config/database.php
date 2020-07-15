@@ -1,11 +1,10 @@
 <?php
-$url = parse_url(getenv("CLEARDB_DATABASE_URL"));
-$host = $url["us-cdbr-east-02.cleardb.com"];
-$username = $url["b494a6108b614f"];
-$password = $url["9b3b5cfb"];
-$database = substr($url["heroku_425d8e3eb74c03b"], 1);
 use Illuminate\Support\Str;
-
+$url = parse_url(getenv("CLEARDB_DATABASE_URL"));
+$host = $url["us-cdbr-east-02.cleardb.com"] ?? null;
+$username = $url["b494a6108b614f"] ?? null;
+$password = $url["9b3b5cfb"] ?? null;
+$database = substr($url["heroku_425d8e3eb74c03b"], 1);
 return [
 
     /*
@@ -19,7 +18,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'CLEARDB_DATABASE_URL'),
+    'default' => env('DB_CONNECTION', 'mysql'),
 
     /*
     |--------------------------------------------------------------------------
@@ -47,9 +46,9 @@ return [
             'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
         ],
 
-        'CLEARDB_DATABASE_URL' => [
+        'mysql' => [
             'driver' => 'mysql',
-            'url' => $url,
+            //'url' => env('DATABASE_URL'),
             'host' => $host,
             'port' => env('DB_PORT', '3306'),
             'database' => $database,
@@ -62,9 +61,9 @@ return [
             'prefix_indexes' => true,
             'strict' => true,
             'engine' => null,
-            'options' => extension_loaded('pdo_mysql') ? array_filter([
+            /*'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
-            ]) : [],
+            ]) : [],*/
         ],
 
         'pgsql' => [
