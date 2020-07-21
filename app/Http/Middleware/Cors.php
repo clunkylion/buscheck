@@ -19,9 +19,7 @@ class Cors
             //probando la rama dev
             //voy a crear el controlador de reclamos
             ->header('Access-Control-Allow-Origin', '*')
-            ->header("Access-Control-Allow-Credentials", true)
             ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS')
-            ->header('Access-Control-Allow-Headers', 'Content-Type', 'Authorization', 'Access-Control-Allow-Headers', 'X-Auth-Token', 'Accept', 'X-Requested-With', 'application/json');
-            
+            ->header("Access-Control-Allow-Headers", 'Content-Type, Authorization');             
     }
 }

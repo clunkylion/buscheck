@@ -19,12 +19,12 @@ use Illuminate\Support\Facades\Route;
 });*/
 
 //Public Routes
-Route::post('/loginApp', 'AuthController@loginApp');
-Route::post('/loginWeb', 'AuthController@loginWeb');
-Route::post('/signup', 'AuthController@signup');
-Route::apiResource('/enterprise', 'EnterpriseController');
+Route::post('/loginApp', 'AuthController@loginApp')->middleware('cors');;
+Route::post('/loginWeb', 'AuthController@loginWeb')->middleware('cors');
+Route::post('/signup', 'AuthController@signup')->middleware('cors');;
+Route::apiResource('/enterprise', 'EnterpriseController')->middleware('cors');;
 //Protected Routes
-Route::group(['middleware' => 'auth:api'], function(){
+Route::group(['middleware' => ['auth:api', 'cors']], function(){
     
     Route::apiResource('/client', 'ClientController');
     Route::apiResource('/user', 'UserController');
@@ -37,5 +37,4 @@ Route::group(['middleware' => 'auth:api'], function(){
     Route::apiResource('/photoBus', 'BusPhotoController');
     Route::apiResource('/ticket', 'TicketController');
     Route::apiResource('/totalSale', 'TotalSaleController');
-
 });
